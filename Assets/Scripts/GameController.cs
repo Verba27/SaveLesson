@@ -52,6 +52,11 @@ public class GameController : MonoBehaviour
     public int PotionsInBag { get; set; }
     public int CurrentHealts { get; set; }
 
+    [SerializeField] private GameObject coinPrefab;
+    [SerializeField] private GameObject potPrefab;
+    [SerializeField] private GameObject trapPrefab;
+    
+
     public List<Vector3> coinsPos;
     public List<Vector3> potsPos;
     public List<Vector3> trapsPos;
@@ -64,9 +69,9 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         isPlaying = true;
-        coinsPos = new List<Vector3>();
-        potsPos = new List<Vector3>();
-        trapsPos = new List<Vector3>();
+        // coinsPos = new List<Vector3>();
+        // potsPos = new List<Vector3>();
+        // trapsPos = new List<Vector3>();
     }
 
     public void SetPlayer(GameObject obj)
@@ -99,21 +104,37 @@ public class GameController : MonoBehaviour
         var myData = new GameData();
         myData._coinsInBag = CoinsInBag;
         myData._potionsInBag = PotionsInBag;
-        // myData._coinsPosition = coinsPos;
-        // myData._potionsPosition = potsPos;
-        // myData._trapsPosition = trapsPos;
+        myData._coinsPosition = coinsPos;
+        myData._potionsPosition = potsPos;
+        myData._trapsPosition = trapsPos;
         myData._playerPositionX = (int) player.transform.position.x;
         myData._playerPositionZ = (int) player.transform.position.z;
         myData._playerRotationY = (int) player.transform.rotation.y;
 
-        string dataToSave = JsonConvert.SerializeObject(myData);
-        File.WriteAllText(Application.persistentDataPath + Path.PathSeparator + "save_data.json",dataToSave);
+        string dataToSave = JsonUtility.ToJson(myData);
+        File.WriteAllText(Application.dataPath + "/save_data.json", dataToSave);
     }
 
     public void LoadData()
     {
-        
-        string sd = File.ReadAllText(Application.persistentDataPath + Path.PathSeparator + "save_data.json");
-        Debug.Log(sd);
+        var path = Application.dataPath + "/save_data.json";
+        GameData gameData = JsonUtility.FromJson<GameData>(path);
+        CoinsInBag = gameData._coinsInBag;
+        PotionsInBag = gameData._potionsInBag;
+        coinsPos = gameData._coinsPosition;
+        potsPos = gameData._potionsPosition;
+        trapsPos = gameData._trapsPosition;
+        for (int i = 0; i < coinsPos.Count; i++)
+        {
+            Instantiate(coinPrefab, coinsPos[i], Quaternion.identity);
+        }
+        for (int i = 0; i < potsPos.Count; i++)
+        {
+            Instantiate(potPrefab, potsPos[i], Quaternion.identity);
+        }
+        for (int i = 0; i < trapsPos.Count; i++)
+        {
+            Instantiate(trapPrefab, trapsPos[i], Quaternion.identity);
+        }
     }
 }

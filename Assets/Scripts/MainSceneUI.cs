@@ -6,6 +6,7 @@ public class MainSceneUI : MonoBehaviour
 {
     [SerializeField] private Button firstButton;
     [SerializeField] private Button secondButton;
+    [SerializeField] private Button loadButton;
     [SerializeField] private Canvas mainMenuCanvas;
 
     private int levelChosed;
@@ -28,6 +29,11 @@ public class MainSceneUI : MonoBehaviour
         GameController.Instance.StartGame();
         SceneManager.LoadScene("GameScene");
         
+    }
+
+    public void LoadGame()
+    {
+        GameController.Instance.LoadData();
     }
 
     
